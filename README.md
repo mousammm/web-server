@@ -9,9 +9,9 @@ Something like nginix but from scratch, in C!
 [ ] Listens on specified port (default: 9090)
 [ ] Serves files from specified directory
 [ ] Root response 
-    [ ] Simple Welcome
-    [ ] Simple Directory Listing
-    [ ] cmd line arg for root html file
+    [ ] 1 Simple Welcome
+    [ ] 2 Simple Directory Listing
+    [ ] "" > cmd line arg for root html file
 [ ] HTTP Features > handle text
     [ ] GET / HTTP/1.1          → serve index.html or welcome
     [ ] GET /style.css HTTP/1.1 → serve CSS file

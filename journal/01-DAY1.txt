@@ -1,0 +1,108 @@
+Tue/Nov/13 2025
+
+Whats going on ?
+Im currently 18 highschooler, about to give finals in 2 months, u guess it i havent study anything i dont know if im gonna pass or not so i thought of building a web server or http server idk im still learning may be i could get an internship
+
+that how its done:
+# HEADERS
+	<sys/socket.h> // socket bind accept 
+	<arpa/inet.h> // htons
+	<unistd.h> // close
+	<stirng.h> // strlen
+
+1. creating the socket 
+
+int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+- AF_INET = ipv4
+- SOCK_STREAM = 2 way connection 
+- 0 = default
+
+2. initilization the sockaddress_in 
+
+struct sockaddr_in address;
+address.sin_family = AF_INET; // for ipv4
+address.sin_addr.s_addr = INADDR_ANY; // accept any connection that is sent to server
+address.sin_port = htons(8080); // setting the port 
+
+3. binding 
+
+bind(server_fd,  (struct sockaddr *)&address, sizeof(address));
+- server_fd = server file descriptoer 
+- (struct sockaddr *)&address 
+	- we need a pointer to sockaddr 
+	- casting sockaddr_in -> sockaddr
+- sizeof(address) = lol
+
+4. listening for connection
+
+listen(server_fd, 10);
+- server_fd = lol
+- 10 = backlog
+
+5. accepting the connection 
+
+int client_fd = accept(server_fd, 0, 0);
+- server_fd = lol
+- 0 = client info
+- 0 = 
+
+6. sending a http message 
+
+    char *response = 
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Content-Length: 13\r\n"
+        "\r\n"
+        "Hello, World!";
+    
+    send(client_fd, response, strlen(response), 0);
+
+7. closing connection
+
+close(client_fd);
+close(server_fd);
+
+extras
+
+1. get client ip address
+// client info
+ struct sockaddr_in client_address;
+ socklen_t client_addr_len = sizeof(client_address);
+ int client_fd = accept(server_fd, (struct sockaddr *)&client_address, &client_addr_len);
+
+ char client_ip[INET_ADDRSTRLEN];
+ inet_ntop(AF_INET, &client_address.sin_addr, client_ip, INET_ADDRSTRLEN);
+ int client_port = ntohs(client_address.sin_port);
+
+ printf("Client connected from: %s:%d\n", client_ip, client_port);
+ // client info end
+
+2. get http headers
+    // Read and parse HTTP request
+    char buffer[1024] = {0};
+    int bytes_read = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
+    
+    if (bytes_read > 0) {
+        printf("\n=== Received HTTP Request ===\n%s\n", buffer);
+        
+        // Parse request line (first line)
+        char method[16], path[256], version[16];
+        sscanf(buffer, "%s %s %s", method, path, version);
+        
+        printf("Method: %s\n", method);
+        printf("Path: %s\n", path);
+        printf("Version: %s\n", version);
+        
+        // Look for specific headers
+        char *user_agent = strstr(buffer, "User-Agent:");
+        if (user_agent) {
+            user_agent = strtok(user_agent, "\r\n");
+            printf("User-Agent: %s\n", user_agent + 11); // Skip "User-Agent:"
+        }
+        
+        char *host = strstr(buffer, "Host:");
+        if (host) {
+            host = strtok(host, "\r\n");
+            printf("Host: %s\n", host + 6); // Skip "Host: "
+        }
+    }
