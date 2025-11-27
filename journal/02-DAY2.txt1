@@ -1,0 +1,88 @@
+# refactoring our code 
+
+# GOAL we need to make it modular
+   	int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+        struct sockaddr_in server_address;
+        server_address.sin_family = AF_INET;
+        server_address.sin_port = htons(8080);
+        server_address.sin_addr.s_addr = INADDR_ANY;
+
+# Server.h
+
+#1 Move all the header
+#include <sys/socket.h> // socket
+#include <arpa/inet.h> // htons
+#include <unistd.h> // close
+#include <string.h> // strlen
+#include <stdlib.h> // malloc
+
+#2 Creating a struct 
+typedef struct {
+    int fd;
+    int port;
+    int is_running;
+    struct sockaddr_in address;
+} Server;
+
+#3 Function declaration
+Server* server_create(int port);
+- the Server* will get a return value of struct pointer moreover an address 
+- we can use this to access the struct things like fd port etc
+
+# Server.c
+
+#1 server_create()
+Server* server_create(int port)
+{
+        Server* server = malloc(sizeof(Server));
+
+        server->fd = socket(AF_INET, SOCK_STREAM, 0);
+        server->port = port;
+        server->is_running = 0;
+
+        server->address.sin_family = AF_INET;
+        server->address.sin_port = htons(port);
+        server->address.sin_family = INADDR_ANY;
+
+        return server;
+}
+
+- have to use malloc as struct is a user define datatype so we have to define how much size it can have
+- The compiler doesn't know how much memory to reserve for "Server"
+
+#2 server_start()
+- declare fun in Server.h
+
+int server_start(Server* server)
+{
+        bind(server->fd, (struct sockaddr*)&server->address, sizeof(server->address));
+        listen(server->fd, 10);
+        server->is_running = 1;
+        printf("Server is running on port %d..\n", server->port);
+
+        return 0;
+}
+
+#3 server_accept()
+- Client struct in Server.h
+- fun declaration in Server.h
+
+        if(!server->is_running ) return NULL;
+
+  	// Filling the size of client struct variable 
+        Client* client = malloc(sizeof(Client));
+
+	// normal accept 
+        socklen_t client_addr_length = sizeof(client->address); // accept accoet pointer
+        client->fd = accept(server->fd, (struct sockaddr*)&client->address, &client_addr_length);
+                                              // client info                  // only accept pointer
+
+        // Fill client infomaton
+        inet_ntop(AF_INET, &client->address.sin_addr, client->ip, INET_ADDRSTRLEN); // get client ip
+        client->port = ntohs(client->address.sin_port);   		            // get client port
+
+        time_t now = time(NULL);                                                    // get timestamp
+        strftime(client->timestamp, sizeof(client->timestamp),
+                        "%Y-%m-%d %H:%M:%S", localtime(&now));
+
+        return client;
