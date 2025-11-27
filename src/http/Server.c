@@ -127,7 +127,7 @@ void http_send_response(int client_fd, const char* body, const char* content_typ
 
 void client_handle_request(ClientInfo* client) {
     // Log the connection
-    client_log_connection(client);
+    client_log_connection(client); // ip port time of client 
 
     // Read HTTP request
     char buffer[BUFFER_SIZE] = {0};

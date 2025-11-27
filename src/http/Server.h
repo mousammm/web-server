@@ -45,7 +45,7 @@ typedef struct {
 Server* server_create(int port); // done 
 void server_destroy(Server* server);
 int server_start(Server* server); // done 
-void server_stop(Server* server);
+void server_stop(Server* server); // done 
 ClientInfo* server_accept_client(Server* server); // done 
 void client_handle_request(ClientInfo* client);
 void client_destroy(ClientInfo* client);
