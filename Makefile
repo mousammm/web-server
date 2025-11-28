@@ -5,16 +5,17 @@ TARGET = bin/server
 
 # Directories
 SRC_DIR = src
+HTTP_DIR = $(SRC_DIR)/http
 BIN_DIR = bin
 
-# Source files
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/Server.c $(SRC_DIR)/Http.c $(SRC_DIR)/Client.c
+# Source files - main.c is in src/, others are in src/http/
+SRCS = $(SRC_DIR)/main.c $(HTTP_DIR)/Server.c $(HTTP_DIR)/Http.c $(HTTP_DIR)/Client.c
 
-# Object files (in bin directory, keep same structure)
+# Object files (in bin directory)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
 
 # Header files
-HEADERS = $(SRC_DIR)/Server.h
+HEADERS = $(HTTP_DIR)/Server.h
 
 # Create bin directory structure if it doesn't exist
 $(shell mkdir -p $(BIN_DIR))
@@ -28,7 +29,7 @@ $(TARGET): $(OBJS)
 
 # Compile .c files to .o files in bin directory
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
-	@mkdir -p $(dir $@)  # Create subdirectories in bin if needed
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean up build files

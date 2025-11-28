@@ -1,55 +1,58 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <sys/socket.h> // socket 
+#include <arpa/inet.h> // htons 
+#include <unistd.h> // close
+#include <string.h> // strlen 
+#include <strings.h> // strcasecmp
+#include <stdlib.h> // malloc
 #include <stdio.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <string.h>
 #include <time.h>
-#include <netinet/in.h>
-
-#define PORT 8080
-#define BUFFER_SIZE 4096
-#define MAX_CLIENTS 10
-
-// Client information struct
-typedef struct {
-    int fd;
-    struct sockaddr_in address;
-    char ip[INET_ADDRSTRLEN];
-    int port;
-    char timestamp[64];
-} ClientInfo;
-
-// HTTP Request struct
-typedef struct {
-    char method[16];
-    char path[256];
-    char version[16];
-    char user_agent[256];
-    char host[128];
-    char content_type[128];
-    int content_length;
-} HttpRequest;
 
 // Server struct
 typedef struct {
     int fd;
-    struct sockaddr_in address;
     int port;
     int is_running;
+    struct sockaddr_in address;
 } Server;
 
-// Function declarations
-Server* server_create(int port); // done 
-void server_destroy(Server* server);
-int server_start(Server* server); // done 
-void server_stop(Server* server); // done 
-ClientInfo* server_accept_client(Server* server); // done 
-void client_handle_request(ClientInfo* client);
-void client_destroy(ClientInfo* client);
+typedef struct {
+    int fd;
+    struct sockaddr_in address;
+    char ip[INET_ADDRSTRLEN];  // Store IP as string
+    int port;                  // Store port
+    char timestamp[20];        // Store connection time
+} Client;
+
+// HTTP Request struct
+typedef struct {
+    char method[16]; // GET POST PUT etc
+    char path[256];  // localhost:8080/path
+    char version[16];
+    char user_agent[256];
+    char host[128];
+    char content_type[128]; // Empty for get request 
+    int content_length;     // 0 for get request
+} HttpRequest;
+
+
+// server
+Server* server_create(int port); // set the TCP ipv4
+int server_start(Server* server); // bind listen
+void server_stop(Server* server); // set is_running = 0
+
+// client 
+Client* server_accept_client(Server* server); // is_running > 0 then accept & get client info
+void client_logs(Client* client); // get client info ip port time
+void client_handle_request(Client* client); 
+// client_logs >
+// parse http request with client>fd buffer > 
+// route handeling
+
+// http
 void http_parse_request(const char* buffer, HttpRequest* request);
-void http_send_response(int client_fd, const char* body, const char* content_type);
+void http_send_response(Client* client, const char* body, const char* content_type);
 
 #endif
