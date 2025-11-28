@@ -1,0 +1,45 @@
+# Day 3 
+
+OUR server listens for incomming connection 
+Client(browser) -> http://localhost:8080/index.html
+- browser send a req 
+- we can accept it in buffer from clientFile descriptor
+
+	GET /example.txt HTTP/1.1  //Method, Path, Http Version
+	Host: localhost:8000
+	User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+	Accept-Language: en-US,en;q=0.5
+	Accept-Encoding: gzip, deflate
+	Connection: keep-alive
+
+Now after getting the request in buffer 
+we need to send a response
+
+	HTTP/1.1 200 OK
+	Content-Type: text/plain
+	Content-Length: 27
+	Connection: close
+	
+	This is the file content!
+
+
+What browser can send is pre defined
+        text/plain → Show as plain text
+        text/html → Render as HTML webpage
+        image/png → Display as image
+        application/json → Show formatted JSON
+	application/octet-stream -> Downloads as file
+
+------------------------------------------------------------------------------
+
+- if browser know that client want index.html 
+- then how come we need to defined the contentt type in response
+ANS:  its for the browser convinence so it can do the things it suppose to do
+      with the the content like rendering as img html json etc
+
+CODE:
+
+- refactoring
+- remove all http function from Server.c to Http.c
+- Same for Client fun 

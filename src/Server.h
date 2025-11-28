@@ -5,7 +5,10 @@
 #include <arpa/inet.h> // htons 
 #include <unistd.h> // close
 #include <string.h> // strlen 
+#include <strings.h> // strcasecmp
 #include <stdlib.h> // malloc
+#include <stdio.h>
+#include <time.h>
 
 // Server struct
 typedef struct {
@@ -30,8 +33,8 @@ typedef struct {
     char version[16];
     char user_agent[256];
     char host[128];
-    char content_type[128];
-    int content_length;
+    char content_type[128]; // Empty for get request 
+    int content_length;     // 0 for get request
 } HttpRequest;
 
 

@@ -9,7 +9,7 @@ int main() {
 	// log client ip timestamp time 
 	// read http headers in buffer | and log them like GET PATH VERSION CONTENT TYPE LENGTH
 	// route handling
-	client_handle_request(client);
+		client_handle_request(client);
 
     	close(client->fd);
     	close(server->fd);
