@@ -29,22 +29,34 @@ void http_parse_request(const char* buffer, HttpRequest* request)
     	}
 }
 
-// send response to the client 
-void http_send_response(Client* client, const char* body, const char* content_type) {
-    char response[4096];
-    snprintf(response, sizeof(response),
-        "HTTP/1.1 200 OK\r\n"
+// http_send_response() - more flexible
+void http_send_response(Client* client, HttpResponse* response) {
+    char headers[1024];
+    snprintf(headers, sizeof(headers),
+        "HTTP/1.1 %d %s\r\n"
         "Content-Type: %s\r\n"
-        "Content-Length: %ld\r\n"
+        "Content-Length: %zu\r\n"
         "Connection: close\r\n"
-        "\r\n"
-        "%s",
-        content_type, strlen(body), body); // body is actual data like html api file 
-    
-    send(client->fd, response, strlen(response), 0);
+        "\r\n",
+        response->status_code, response->status_text,
+        response->content_type, response->content_length);
 
-     // Full context available!
-    printf("Sent %ld bytes to %s\n",
-           strlen(response), client->ip);
+    write(client->fd, headers, strlen(headers));
+    write(client->fd, response->content, response->content_length);
+    
+    // Full context available!
+    printf("\nHTTP_RESPONSE:");
+    printf("%d %s %s %ld\n{{%s}}\n\n", response->status_code, response->status_text, response->content_type,  response->content_length, response->content);
+
 }
 
+void http_send_html(Client* client, const char* html) {
+    HttpResponse res = {
+        .status_code = 200,
+        .status_text = "OK", 
+        .content_type = "text/html",
+        .content = (char*)html,
+        .content_length = strlen(html)
+    };
+    http_send_response(client, &res);
+}

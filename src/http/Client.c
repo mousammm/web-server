@@ -50,48 +50,11 @@ void client_handle_request(Client* client){
         	http_parse_request(buffer, &request);  // return noting 
 
     		// Now you have structured data
-    		printf("Method: %s\nPath: %s\nVersion: %s\nUser_Agent: %s\nHost: %s\nContent_type: %s\nContent_Length: %d\n\n", 
-			    request.method, request.path, request.version,
-			    request.user_agent, request.host, 
-			    request.content_type,
-			    request.content_length
-			    );
+    		printf("HTTP_REQUEST:");
+    		printf("%s %s %s\n\n", request.method, request.path, request.version );
 
 		// Route handlaing 
-        	if (strcmp(request.path, "/") == 0 || strcmp(request.path, "/home") == 0) {
-        	    char response_body[256];
-        	    snprintf(response_body, sizeof(response_body),
-        	            "<html><body><h1>Welcome Home!</h1><p>Client: %s</p></body></html>",
-        	            client->ip);
-        	    http_send_response(client, response_body, "text/html");
-        	}
-		else if (strcmp(request.path, "/json") == 0 ) {
-        	    http_send_response(client, "[{\"id\": 1, \"name\": \"John\"}]", "application/json");
-        	}
-        	else if (strcmp(request.path, "/hello") == 0) {
-        	    http_send_response(client, "Hello World!", "text/plain");
-        	}
-        	else if (strcmp(request.path, "/time") == 0) {
-        	    char time_response[128];
-        	    snprintf(time_response, sizeof(time_response), 
-        	            "Server Time: %s\nClient IP: %s", 
-        	            client->timestamp, client->ip);
-        	    http_send_response(client, time_response, "text/plain");
-        	}
-        	else if (strcmp(request.path, "/info") == 0) {
-        	    char info_response[512];
-        	    snprintf(info_response, sizeof(info_response),
-        	            "Client Information:\n"
-        	            "IP: %s\n"
-        	            "Port: %d\n"
-        	            "Time: %s\n"
-        	            "User-Agent: %s",
-        	            client->ip, client->port, client->timestamp, request.user_agent);
-        	    http_send_response(client, info_response, "text/plain");
-        	}
-        	else {
-        	    http_send_response(client, "404 - Page Not Found", "text/plain");
-        	}
+		router_handle_request(client, &request);
 
     	} // if end
 

@@ -9,7 +9,7 @@ HTTP_DIR = $(SRC_DIR)/http
 BIN_DIR = bin
 
 # Source files - main.c is in src/, others are in src/http/
-SRCS = $(SRC_DIR)/main.c $(HTTP_DIR)/Server.c $(HTTP_DIR)/Http.c $(HTTP_DIR)/Client.c
+SRCS = $(SRC_DIR)/main.c $(HTTP_DIR)/Server.c $(HTTP_DIR)/Http.c $(HTTP_DIR)/Client.c $(HTTP_DIR)/Router.c
 
 # Object files (in bin directory)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)

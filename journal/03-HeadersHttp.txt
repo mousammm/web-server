@@ -43,3 +43,77 @@ CODE:
 - refactoring
 - remove all http function from Server.c to Http.c
 - Same for Client fun 
+
+SRC AFTER:
+src/
+├── http
+│   ├── Client.c
+│   ├── Http.c
+│   ├── Server.c
+│   └── Server.h
+└── main.c
+
+
+OVERVIEV:
+Server.c
+	server_create(): set up ipv4 
+	server_start(): bind and listen (Now that i think we can do in one fun ahh!..)
+	server_stop(): is_running = 0 > used be accept to see if server is running
+
+Client.c ->
+	client_accept_client(): 
+		check is_running 
+	 	accept then  fill client info (port/ip/timestamp)
+	client_logs(): log client ip time port
+	client_handle_request():
+		client_logs()
+		client http header put in <buffer>
+		extract 
+			Method/Path/HttpVersion
+			user_agent/host
+			content_type   // empty im get req
+			content_lenght // 0 in get req 
+	routing: from the path send a http response
+			
+Http.c ->	
+	http_parse_request():
+		get the <buffer> (same one defined in client_handle_request())
+		parse: method path version and all the things
+	http_send_response():
+		send response with the info like 
+			http Version/Content type/Content-Length
+			NOTE: Content types is not the same that we have got from client_handle_request() (come on get req have NULL value )
+			NOTE: Content length is also not the same but the length of the file/text/etc we are sending (Yeah this part was too confusing!)
+
+SOME IMPROVMENT Server.c
+merge server_start() code in server_create()
+- now server_create()
+	- set network configuration 
+	- bind > listen 
+
+TODOS: for day4
+
+#1 client_handle_request() does:
+- create a routing file that does routing 
+- some helper function to serve text/json/file/errors
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

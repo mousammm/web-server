@@ -26,7 +26,7 @@ typedef struct {
     char timestamp[20];        // Store connection time
 } Client;
 
-// HTTP Request struct
+// HTTP Request from client
 typedef struct {
     char method[16]; // GET POST PUT etc
     char path[256];  // localhost:8080/path
@@ -37,6 +37,14 @@ typedef struct {
     int content_length;     // 0 for get request
 } HttpRequest;
 
+// http response from server
+typedef struct {
+    int status_code;
+    const char* status_text;
+    const char* content_type;  // From SERVER (for response)
+    const char* content;       // From SERVER
+    size_t content_length;     // From SERVER (for response)
+} HttpResponse;
 
 // server
 Server* server_create(int port); // set the TCP ipv4
@@ -53,6 +61,11 @@ void client_handle_request(Client* client);
 
 // http
 void http_parse_request(const char* buffer, HttpRequest* request);
-void http_send_response(Client* client, const char* body, const char* content_type);
+//void http_send_response(Client* client, const char* body, const char* content_type); deleted
+void http_send_response_new(Client* client, HttpResponse* response);
+void http_send_html(Client* client, const char* html); // new 
+						       
+// Routing 
+void router_handle_request(Client* client, HttpRequest* request);
 
 #endif

@@ -1,0 +1,85 @@
+# Day 4
+
+#1 Client.c
+// Route handlaing 
+router_handle_request(client, &request);
+
+- remove the if else to router_handle_request() in Router.c
+
+#2 Router.c
+- void router_handle_request(Client* client, HttpRequest* request)
+
+	// simple routing 
+	if (strcmp(request->path, "/") == 0) {
+    		char response_body[256];
+        	snprintf(response_body, sizeof(response_body),
+        		"<html><body><h1>Welcome Home!</h1><p>Client: %s</p></body></html>",
+        		client->ip);
+        	http_send_response(client, response_body, "text/html");
+    	}
+	... rest else if()
+
+#3 now we can simplify the 
+	if (strcmp(request->path, "/") == 0) {
+    		char response_body[256];
+        	snprintf(response_body, sizeof(response_body),
+        		"<html><body><h1>Welcome Home!</h1><p>Client: %s</p></body></html>",
+        		client->ip);
+        	http_send_response(client, response_body, "text/html");
+    	}
+to --->
+ 	if (strcmp(request->path, "/") == 0) {
+		http_send_html()
+		http_send_text()
+		http_send_json()
+		ete...
+	}
+
+#4 we need to server file 
+- the we need to get the content_type from the file extension
+- we could store the httpResponse in struct 
+
+#5 Server.h ( we wont be hard coding content_lenght type etc )
+typedef struct {
+    int status_code;
+    const char* status_text;
+    const char* content_type;  // From SERVER (for response)
+    const char* content;       // From SERVER
+    size_t content_length;     // From SERVER (for response)
+} HttpResponse;
+
+#6 Http.c 
+void http_send_response(Client* client, HttpResponse* response) {
+    char headers[1024];
+    snprintf(headers, sizeof(headers),
+        "HTTP/1.1 %d %s\r\n"
+        "Content-Type: %s\r\n"
+        "Content-Length: %zu\r\n"
+        "Connection: close\r\n"
+        "\r\n",
+        response->status_code, response->status_text,
+        response->content_type, response->content_length);
+
+    write(client->fd, headers, strlen(headers));
+    write(client->fd, response->content, response->content_length);
+
+    // Full context available!
+    printf("HTTP_RESPONSE\n");
+    printf("STATUS_CODE:%d\nSTATUS_TEXT:%s\nCONTENT_TYPE:%s\nCONTENT:%s\nCONTENT_LENGTH:%ld\n\n", response->status_code, response->status_text, response->content_type, response->content, response->content_length);
+}
+
+#7 Http.c used in routing to send response 
+void http_send_html(Client* client, const char* html) {
+    HttpResponse response = {
+        .status_code = 200,
+        .status_text = "OK", 
+        .content_type = "text/html",
+        .content = (char*)html,
+        .content_length = strlen(html)
+    };
+    http_send_response_new(client, &response);
+}
+
+#8 delete http_send_response and replace with the new one 
+- new one 
+- will accept from Struct HttpRespone (no hard code values)
