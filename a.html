@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure HTML Page</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Pure HTML Page</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home">
+            <h2>Home Section</h2>
+            <p>This is a pure HTML page with no CSS or JavaScript.</p>
+            <article>
+                <h3>HTML Only Features</h3>
+                <p>This page demonstrates various HTML elements:</p>
+                <ul>
+                    <li>Headings</li>
+                    <li>Paragraphs</li>
+                    <li>Lists</li>
+                    <li>Links</li>
+                    <li>Images</li>
+                    <li>Tables</li>
+                    <li>Forms</li>
+                </ul>
+            </article>
+        </section>
+
+        <section id="about">
+            <h2>About Us</h2>
+            <p>We create simple, accessible web pages using pure HTML.</p>
+            
+            <table border="1">
+                <caption>Our Team</caption>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Developer</td>
+                        <td>Technology</td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>Designer</td>
+                        <td>Creative</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <form action="#" method="post">
+                <fieldset>
+                    <legend>Your Information</legend>
+                    
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    <br><br>
+                    
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <br><br>
+                    
+                    <label for="subject">Subject:</label>
+                    <select id="subject" name="subject">
+                        <option value="general">General Inquiry</option>
+                        <option value="support">Technical Support</option>
+                        <option value="feedback">Feedback</option>
+                    </select>
+                    <br><br>
+                    
+                    <label for="message">Message:</label>
+                    <br>
+                    <textarea id="message" name="message" rows="4" cols="50" required></textarea>
+                    <br><br>
+                    
+                    <input type="submit" value="Send Message">
+                    <input type="reset" value="Clear Form">
+                </fieldset>
+            </form>
+        </section>
+    </main>
+
+    <aside>
+        <h3>Quick Links</h3>
+        <ul>
+            <li><a href="#privacy">Privacy Policy</a></li>
+            <li><a href="#terms">Terms of Service</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+    </aside>
+
+    <footer>
+        <p>&copy; 2024 Pure HTML Page. All rights reserved.</p>
+        <address>
+            Contact: <a href="mailto:info@example.com">info@example.com</a>
+        </address>
+    </footer>
+</body>
+</html>

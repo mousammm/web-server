@@ -27,7 +27,8 @@ Client* server_accept_client(Server* server)
 	return client;
 }
 
-void client_logs(Client* client) {
+void client_logs(Client* client)
+{
     printf("\n\n=== New Connection ===\n");
     printf("Client IP: %s\n", client->ip);
     printf("Client Port: %d\n", client->port);
@@ -51,7 +52,7 @@ void client_handle_request(Client* client){
 
     		// Now you have structured data
     		printf("HTTP_REQUEST:");
-    		printf("%s %s %s\n\n", request.method, request.path, request.version );
+    		printf("%s-%s-%s\n\n", request.method, request.path, request.version );
 
 		// Route handlaing 
 		router_handle_request(client, &request);

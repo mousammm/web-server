@@ -68,6 +68,9 @@ void http_send_response(Client* client, HttpResponse* response) {
     printf("STATUS_CODE:%d\nSTATUS_TEXT:%s\nCONTENT_TYPE:%s\nCONTENT:%s\nCONTENT_LENGTH:%ld\n\n", response->status_code, response->status_text, response->content_type, response->content, response->content_length);
 }
 
+- new one 
+- will accept from Struct HttpRespone (no hard code values)
+
 #7 Http.c used in routing to send response 
 void http_send_html(Client* client, const char* html) {
     HttpResponse response = {
@@ -79,7 +82,12 @@ void http_send_html(Client* client, const char* html) {
     };
     http_send_response_new(client, &response);
 }
+void http_send_text(Client* client, const char* text);
+void http_send_json(Client* client, const char* json);
 
-#8 delete http_send_response and replace with the new one 
-- new one 
-- will accept from Struct HttpRespone (no hard code values)
+#8 add
+
+const char* get_content_type(const char* filename);
+void serve_static_file(Client* client, const char* filename);
+
+

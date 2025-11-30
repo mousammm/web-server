@@ -34,7 +34,7 @@ void router_handle_request(Client* client, HttpRequest* request)
     	    		http_send_html(client, "<h1>info</h1>");
        		}
         	else {
-    	    		http_send_html(client, "<h1>404 page not found!</h1>");
+			http_send_error(client, 404, "No file exist on server");
         	}
 
 }
@@ -69,14 +69,15 @@ void serve_static_file(Client* client, const char* filename) {
         http_send_html(client, content);
     }
     else if (strcmp(content_type, "text/plain") == 0) {
-        //http_send_text(client, content);
+        http_send_text(client, content);
     }
     else if (strcmp(content_type, "application/json") == 0) {
-        //http_send_json(client, content);
+        http_send_json(client, content);
     }
     else {
         // For binary files (images, etc.) use the low-level function
-        //http_send_response(client, content, content_type, size);
+	// http_send_binary();
+	http_send_error(client, 404, "File type not supported");
     }
 
     free(content);
@@ -86,7 +87,8 @@ void serve_static_file(Client* client, const char* filename) {
 const char* get_content_type(const char* filename) {
     // Get file extension
     const char* dot = strrchr(filename, '.');
-    if (!dot) return "application/octet-stream";
+    //if (!dot) return "application/octet-stream";
+    if (!dot) return "text/plain";
 
     // Compare extensions
     if (strcmp(dot, ".html") == 0 || strcmp(dot, ".htm") == 0)
@@ -109,5 +111,6 @@ const char* get_content_type(const char* filename) {
         return "application/pdf";
 
     // Default for unknown types
-    return "application/octet-stream";
+    //return "application/octet-stream";
+    return "text/plain";
 }

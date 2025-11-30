@@ -61,9 +61,11 @@ void client_handle_request(Client* client);
 
 // http
 void http_parse_request(const char* buffer, HttpRequest* request);
-//void http_send_response(Client* client, const char* body, const char* content_type); deleted
 void http_send_response_new(Client* client, HttpResponse* response);
 void http_send_html(Client* client, const char* html); // new 
+void http_send_text(Client* client, const char* text);
+void http_send_json(Client* client, const char* json);
+void http_send_error(Client* client, int code, const char* message);
 						       
 // Routing 
 void router_handle_request(Client* client, HttpRequest* request);

@@ -1,0 +1,90 @@
+
+Dir
+└── src
+    ├── http
+    │   ├── Client.c
+    │   ├── Http.c
+    │   ├── Router.c
+    │   ├── Server.c
+    │   └── Server.h
+    └── main.c
+
+# Server.c - 1st impt file  ----------------------------------------------
+
+Server* server_create(int port)
+- 1st fun to get executed 
+- get a port(parameter) 
+- create a ipv4 socket with its address that listen for any incomming connection
+
+void server_stop(Server* server)
+- set is_running to 0
+- will usen in fun like to accept 
+- we only accept incommming connection if is_running is 1
+
+# Client.c - next most imp file   ----------------------------------------------
+
+Client* server_accept_client(Server* server)
+- accept incomming connection 
+- and fill client info like ip/port/timestamp
+
+void client_logs(Client* client)
+- log ip/port/timestamp
+
+void client_handle_request(Client* client){
+- most impt function in whole code base currnetly 
+- get the client reqest in a buffer ( client reqest come from client_file_descriptor )
+- send the buffer to a <http_parse_request()> function (will talk about it later)
+- handle routing <router_handle_request()>
+
+# Http.c - mostly helper funtion ----------------------------------------------
+
+void http_parse_request(const char* buffer, HttpRequest* request)
+- get the buffer parse the request client made (by client i mean browser as we are making a http server we are not writing the client side so we need to follow the http protocol)
+- what does a client(browser) sned as a request 
+
+- METHOD 	(Get / Post / Put ...)
+- PATH   	( 127.0.0.1:8000/about) /about is a path
+- VERSION  	(HTTP 1.1)
+- USER_AGENT ...
+- HOST     	local host 
+- CONTENT_TYPE  ( empty for GET method )
+- ONTENT_LENGTH ( 0 for GET method )
+
+void http_send_response(Client* client, HttpResponse* response) 
+- now after getting the req what to do 
+- send a response like if client is asking for a file send in the response
+- HTTP/1.1 200 ok  	just look  http protocol  	 
+- Content-Type   	text/plain html json etc
+- Content-Length 	the length of file server is sending to client 
+- Connection		close alive
+
+- some helper fun needed for sneding response in Router.c
+void http_send_html(Client* client, const char* html)
+void http_send_text(Client* client, const char* text)
+void http_send_json(Client* client, const char* json)
+void http_send_error(Client* client, int code, const char* message)
+
+# Router.c -------------------------------------------------------------------
+
+void router_handle_request(Client* client, HttpRequest* request)
+
+- just compare the client request path and path we want (req->path == "/home") 
+- for static file we need to used the next fun 
+
+void serve_static_file(Client* client, const char* filename)
+- open a file 
+- get the content type from another <get_content_type()> like main.txt we get text/plain
+- send response same thing we did in route but the thing in route pages are predefile like if we type ...:8000/home we get index.html ------ but in file sending we get a type /index.html we get index.html 
+
+
+
+for now its a pretty darn good thing i have acomplish beside the error handling and better code structure and others
+plan for future idk im thinking of talking a break its been pretty rough days exam feaver like fuckkk future 
+as 18 years i need to start thinking about earining ahhhhhh yeah definetl i will be working it but need some break 
+to recover and do some other things like get into architeccture classes i have to loook and shift to arch or debian 
+there are so many things get some online exposure 
+
+
+
+30 nov 2025  current date 
+
