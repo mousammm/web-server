@@ -23,7 +23,6 @@ void router_handle_request(Client* client, HttpRequest* request)
        			 // Remove the leading '/' and serve the file
        			 serve_static_file(client, request->path + 1);
     		}
-
         	else if (strcmp(request->path, "/hello") == 0) {
     	    		http_send_html(client, "<h1>Hello</h1>");
         	}
