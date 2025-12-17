@@ -15,6 +15,7 @@ typedef struct {
 
 char buffer[1024] = {0}; 
 int parse_req(int client_fd, Req_t* req); // parse http req
+void send_res(int client_fd, Req_t* req);   // rend req with paresed req 
 
 int main() 
 {
@@ -48,15 +49,8 @@ int main()
         memset(buffer, 0, sizeof(buffer));  // Reset buffer for new request
         parse_req(client_fd, &req);         // get http req GET path Version
         printf("path: %s\n\n", req.path);   // log
+        send_res(client_fd, &req);  // send res
 
-        char *res = 
-            "HTTP/1.1 200 OK\r\n"
-            "Content-Type: text/html\r\n"
-            "Content-Length: 13\r\n"
-            "\r\n"
-            "Hello, World!";
-
-        send(client_fd, res, strlen(res), 0);
         close(client_fd);
     };
 
@@ -94,4 +88,16 @@ int parse_req(int client_fd, Req_t* req)
     req->version[sizeof(req->version) - 1] = '\0';
     
     return 0;
+}
+
+void send_res(int client_fd, Req_t* req)
+{
+    char res[1024] = 
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "Content-Length: 13\r\n"
+        "\r\n"
+        "Hello, World!";
+
+    send(client_fd, res, strlen(res), 0);
 }
