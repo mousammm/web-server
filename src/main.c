@@ -17,18 +17,22 @@ int main() {
 	bind(server_fd, (struct sockaddr*)&address, sizeof(address));
 	listen(server_fd, 10);
 
-    int client_fd = accept(server_fd, NULL, NULL); // null: no need client info
+    printf("Server running on port %d...\n", PORT);
 
-    char *res = 
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/plain\r\n"
-        "Content-Length: 13\r\n"
-        "\r\n"
-        "Hello, World!";
+    while(1)
+    {
+        int client_fd = accept(server_fd, NULL, NULL); // null: no need client info
+        char *res = 
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/plain\r\n"
+            "Content-Length: 13\r\n"
+            "\r\n"
+            "Hello, World!";
 
-    send(client_fd, res, strlen(res), 0);
+        send(client_fd, res, strlen(res), 0);
+        close(client_fd);
+    }
 
-    close(client_fd);
     close(server_fd);
 
     return 0;
