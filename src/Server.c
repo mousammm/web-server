@@ -1,6 +1,6 @@
+// Server.c
 #include "Server.h"
 
-// SERVER
 Server* server_create(int port)
 {
 	// configure network 
@@ -18,7 +18,7 @@ Server* server_create(int port)
 	bind(server->fd, (struct sockaddr*)&server->address, sizeof(server->address));
 	listen(server->fd, 10);
 	server->is_running = 1;
-	printf("Server is running on port %d..\n", server->port);
+	printf("Server is running on port localhost:%d..\n", server->port);
 
 	return server;
 }

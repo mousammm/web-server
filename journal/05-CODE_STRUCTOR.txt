@@ -88,4 +88,3 @@ if u wanna look in to the code current one
 git commit  [ 1bbde34 "handle http req and routes + sned response" ]
 
 30 nov 2025  current date 
-

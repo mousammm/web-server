@@ -1,0 +1,9 @@
+# man socket
+# man bind
+# man sockaddr_in
+# man listen
+# man accept
+# man recv
+# man strchr
+# man open
+# man sendfile

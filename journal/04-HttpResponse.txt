@@ -89,5 +89,3 @@ void http_send_json(Client* client, const char* json);
 
 const char* get_content_type(const char* filename);
 void serve_static_file(Client* client, const char* filename);
-
-

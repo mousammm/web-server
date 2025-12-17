@@ -1,5 +1,5 @@
-#include "Server.h" // printf
-#include <stdio.h> // printf
+#include "Server.h"
+#include <stdio.h>
 		    
 int main() {
     
