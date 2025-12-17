@@ -78,6 +78,12 @@ int parse_req(int client_fd, Req_t* req)
     char *path    = strtok(NULL, " ");
     char *version = strtok(NULL, " ");
 
+    // Shift path by one byte to skip the leading '/'
+    if (path != NULL && *path == '/') {
+        path++;  // Move pointer one byte forward
+    }
+    printf("path*%s",path);
+
     // Copy to struct (safe bounds-checked)
     strncpy(req->method, method, sizeof(req->method) - 1);
     req->method[sizeof(req->method) - 1] = '\0';
@@ -93,6 +99,11 @@ int parse_req(int client_fd, Req_t* req)
 
 void send_res(int client_fd, Req_t* req)
 {
+    FILE* file = fopen(req->path, "rb");
+    fseek(file, 0, SEEK_END);// Get file info
+    long size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
     // Get the MIME type for the requested file
     const char* mime_type = get_mime_type(req->path);
     
@@ -101,12 +112,19 @@ void send_res(int client_fd, Req_t* req)
     snprintf(response, sizeof(response),
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: %s\r\n"
-        "Content-Length: 13\r\n"
-        "\r\n"
-        "hello world",
-        mime_type);
-
+        "Content-Length: %ld\r\n"
+        "\r\n",
+        mime_type, size);
     send(client_fd, response, strlen(response), 0);
+
+    // Send file content
+    char buffer_file[4096]; // Standard buffer size
+    size_t bytes_read;
+    while ((bytes_read = fread(buffer_file, 1, sizeof(buffer_file), file)) > 0) {
+        send(client_fd, buffer_file, bytes_read, 0);
+    }
+    // Cleanup
+    fclose(file);
 }
 
 const char* get_mime_type(const char* path) {
@@ -126,29 +144,4 @@ const char* get_mime_type(const char* path) {
     if (strcmp(ext, "pdf") == 0) return "application/pdf";
     
     return "application/octet-stream";
-}
-
-void serve_file(int client_fd, const char* filename) {
-    FILE* file = fopen(filename, "rb");
-    
-    // Get file info
-    fseek(file, 0, SEEK_END);
-    long size = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    // get mime type 
-    const char* mime_type = get_mime_type(filename);
-    
-    // send headers
-    send_headers(client_fd, 200, mime_type, file_size);
-    
-    // send file
-    char buffer[8192];
-    size_t bytes_read;
-    while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
-        send(client_fd, buffer, bytes_read, 0);
-    }
-    
-    // Cleanup
-    fclose(file);
 }
