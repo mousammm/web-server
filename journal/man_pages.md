@@ -1,6 +1,6 @@
 # man socket
 # man bind
-# man sockaddr_in
+# man sockaddr
 # man listen
 # man accept
 # man recv
