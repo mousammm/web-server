@@ -7,7 +7,6 @@
 
 #define PORT 8080
 
-		    
 int main() {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -33,6 +32,16 @@ int main() {
         int client_port = ntohs(client_address.sin_port);	                            // get client port 
         printf("client: %s:%d\n", client_ip, client_port);
 
+        // get http req
+        char buffer[256] = {0};         // GET /file.html ...
+        recv(client_fd, buffer, 256, 0);
+
+        // parse http request
+        char* f = buffer + 5;   // file.html ...
+        *strchr(f, ' ') = 0;    // file.html0...
+        printf("path:%s\n\n", f);
+
+        
         char *res = 
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: text/html\r\n"
