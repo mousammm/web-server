@@ -16,6 +16,7 @@ typedef struct {
 char buffer[1024] = {0}; 
 int parse_req(int client_fd, Req_t* req); // parse http req
 void send_res(int client_fd, Req_t* req);   // rend req with paresed req 
+const char* get_mime_type(const char* path); // get mime type for Content Type
 
 int main() 
 {
@@ -92,12 +93,37 @@ int parse_req(int client_fd, Req_t* req)
 
 void send_res(int client_fd, Req_t* req)
 {
-    char res[1024] = 
+    // Get the MIME type for the requested file
+    const char* mime_type = get_mime_type(req->path);
+    
+    // Build HTTP response
+    char response[1024];
+    snprintf(response, sizeof(response),
         "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html\r\n"
+        "Content-Type: %s\r\n"
         "Content-Length: 13\r\n"
         "\r\n"
-        "Hello, World!";
+        "hello world",
+        mime_type);
 
-    send(client_fd, res, strlen(res), 0);
+    send(client_fd, response, strlen(response), 0);
+}
+
+const char* get_mime_type(const char* path) {
+    const char *ext = strrchr(path, '.');
+    if (ext == NULL) return "application/octet-stream";
+    
+    ext++; // skip the dot
+    
+    if (strcmp(ext, "html") == 0 || strcmp(ext, "htm") == 0) return "text/html";
+    if (strcmp(ext, "css") == 0) return "text/css";
+    if (strcmp(ext, "js") == 0) return "application/javascript";
+    if (strcmp(ext, "txt") == 0) return "text/plain";
+    if (strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0) return "image/jpeg";
+    if (strcmp(ext, "png") == 0) return "image/png";
+    if (strcmp(ext, "gif") == 0) return "image/gif";
+    if (strcmp(ext, "ico") == 0) return "image/x-icon";
+    if (strcmp(ext, "pdf") == 0) return "application/pdf";
+    
+    return "application/octet-stream";
 }
