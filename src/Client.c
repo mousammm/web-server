@@ -61,4 +61,3 @@ void client_handle_request(Client* client){
 
         printf("Response sent...\n\n");
 }
-

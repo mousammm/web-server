@@ -1,8 +1,9 @@
-#include "./http/Server.h" // printf
+#include "Server.h" // printf
 #include <stdio.h> // printf
 		    
 int main() {
-    	Server* server = server_create(8000);
+    
+    Server* server = server_create(8000);
 	Client* client = server_accept_client(server); // uses is_runnign accept connection 
 
 	// log client ip timestamp time 
@@ -10,8 +11,8 @@ int main() {
 	// route handling
 	client_handle_request(client);
 
-    	close(client->fd);
-    	close(server->fd);
+    close(client->fd);
+    close(server->fd);
 	//server_stop(server); // set is running = 0 
-    	return 0;
+    return 0;
 }

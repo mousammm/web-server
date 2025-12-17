@@ -1,46 +1,37 @@
-# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -g
-TARGET = bin/server
 
-# Directories
-SRC_DIR = src
-HTTP_DIR = $(SRC_DIR)/http
-BIN_DIR = bin
+BINDIR = build
+SRCDIR = src
+BINARY = server
 
-# Source files - main.c is in src/, others are in src/http/
-SRCS = $(SRC_DIR)/main.c $(HTTP_DIR)/Server.c $(HTTP_DIR)/Http.c $(HTTP_DIR)/Client.c $(HTTP_DIR)/Router.c
+INCS = -I./src/includes
+LIBS = 
 
-# Object files (in bin directory)
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
+CFLAGS = -Wall -Wextra -g $(INCS)
+LDLIBS = $(LIBS)
 
-# Header files
-HEADERS = $(HTTP_DIR)/Server.h
+SRCS = $(wildcard $(SRCDIR)/*.c)
+OBJS = $(patsubst $(SRCDIR)/%.c, $(BINDIR)/%.o, $(SRCS))
 
-# Create bin directory structure if it doesn't exist
-$(shell mkdir -p $(BIN_DIR))
+all: $(BINDIR)/$(BINARY)
 
-# Default target
-all: $(TARGET)
+$(BINDIR):
+	mkdir -p $(BINDIR)
 
-# Create the executable
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+# gcc flags -o server main.o lal.o -libs
+$(BINDIR)/$(BINARY): $(OBJS)
+	@echo "Compiling $< -> $@"
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
-# Compile .c files to .o files in bin directory
-$(BIN_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
-	@mkdir -p $(dir $@)
+# gcc flags -c main.c -o main.o
+$(BINDIR)/%.o: $(SRCDIR)/%.c | $(BINDIR)
+	@echo "Compiling $< -> $@"
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up build files
+run: $(BINDIR)/$(BINARY)
+	./$(BINDIR)/$(BINARY)
+
 clean:
-	rm -rf $(BIN_DIR)
+	rm -rf build/*
 
-# Rebuild everything
-rebuild: clean all
-
-# Run the program
-run: $(TARGET)
-	./$(TARGET)
-
-.PHONY: all clean rebuild run
+.PHONY: all run clean
