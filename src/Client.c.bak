@@ -4,9 +4,6 @@
 
 
 void client_handle_request(Client* client){
-	// Log client ip port time
-	client_logs(client);
-
 	char buffer[4096] = {0};
     	int bytes_read = recv(client->fd, buffer, sizeof(buffer) - 1, 0);// Read HTTP request from client socket into buffer
 
