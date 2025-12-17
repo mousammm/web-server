@@ -1,0 +1,7 @@
+// Server.c
+#include "Server.h"
+void server_stop(Server* server)
+{
+	server->is_running = 0;
+}
+
