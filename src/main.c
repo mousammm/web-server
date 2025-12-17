@@ -39,7 +39,8 @@ int main() {
         // parse http request
         char* f = buffer + 5;   // file.html ...
         *strchr(f, ' ') = 0;    // file.html0...
-        printf("path:%s\n\n", f);
+        /* printf("path: %s\n\n", f); */
+        printf("path: %s\n\n", buffer);
 
         
         char *res = 
