@@ -127,3 +127,28 @@ const char* get_mime_type(const char* path) {
     
     return "application/octet-stream";
 }
+
+void serve_file(int client_fd, const char* filename) {
+    FILE* file = fopen(filename, "rb");
+    
+    // Get file info
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    // get mime type 
+    const char* mime_type = get_mime_type(filename);
+    
+    // send headers
+    send_headers(client_fd, 200, mime_type, file_size);
+    
+    // send file
+    char buffer[8192];
+    size_t bytes_read;
+    while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+        send(client_fd, buffer, bytes_read, 0);
+    }
+    
+    // Cleanup
+    fclose(file);
+}
