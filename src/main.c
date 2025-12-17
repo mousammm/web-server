@@ -13,6 +13,7 @@ typedef struct {
     char version[16];
 } Req_t;
 
+char buffer[1024] = {0}; 
 int parse_req(int client_fd, Req_t* req); // parse http req
 
 int main() 
@@ -31,7 +32,6 @@ int main()
 
 
     Req_t req = {0};
-    char buffer[1024] = {0}; 
 
     while(1)
     {
