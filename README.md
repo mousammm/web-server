@@ -2,8 +2,6 @@
 
 A lightweight, single-threaded web server written in pure C that serves static files over HTTP.
 
-![Demo](asset/demo.mp4)
-
 ## Features
 
 - **HTTP/1.1 GET request handling** - Parses method, path, and protocol version
@@ -25,7 +23,7 @@ make
 make run
 ```
 
-## ⚠️ Current Limitations
+## Current Limitations
 
 - Single-threaded (handles one request at a time)
 - Only supports GET method
