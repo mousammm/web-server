@@ -32,7 +32,6 @@ int main()
 
     printf("Server running on port %d...\n", PORT);
 
-
     Req_t req = {0};
 
     while(1)
